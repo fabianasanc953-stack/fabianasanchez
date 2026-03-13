@@ -172,7 +172,7 @@ Feel free to add your own page(s) by sending a PR.
 <a href="https://freifrauvonbleifrei.github.io/" target="_blank">★</a>
 <a href="https://thomasbourke1.github.io/" target="_blank">★</a>
 <a href="https://siddharthsule.com/" target="_blank">★</a>
-<a href="https://waynexucn.github.io/" target="_blank">★</a>
+<a href="https://lab.wenjiexu.site/" target="_blank">★</a>
 <a href="https://zlatanajanovic.com/" target="_blank">★</a>
 <a href="https://mchadolias.github.io/" target="_blank">★</a>
 <a href="https://syanyong.github.io/" target="_blank">★</a>
