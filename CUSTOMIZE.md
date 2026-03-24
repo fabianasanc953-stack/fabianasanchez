@@ -62,7 +62,7 @@ Here we will give you some tips on how to customize the website. One important t
     - [How it works](#how-it-works)
     - [Configuration](#configuration-1)
     - [Disable related posts for a specific post](#disable-related-posts-for-a-specific-post)
-    - [Additional configuration in _config.yml](#additional-configuration-in-_configyml)
+    - [Additional configuration in \_config.yml](#additional-configuration-in-_configyml)
   - [Managing publication display](#managing-publication-display)
   - [Adding a Google Calendar](#adding-a-google-calendar)
     - [Basic usage](#basic-usage)
@@ -113,32 +113,17 @@ The project is structured as follows, focusing on the main components that you w
 │   ├── 📄 cv.yml: CV in YAML format, used when assets/json/resume.json is not found
 │   ├── 📄 repositories.yml: users and repositories info in YAML format
 │   └── 📄 socials.yml: your social media and contact info in YAML format
-├── 📂 _includes/: contains code parts that are included in the main HTML file
-│   └── 📄 news.liquid: defines the news section layout in the about page
-├── 📂 _layouts/: contains the layouts to choose from in the frontmatter of the Markdown files
+├── 📂 _includes/: optional local override includes (default includes are gem-owned in `v1.x`)
+├── 📂 _layouts/: optional local override layouts (default layouts are gem-owned in `v1.x`)
 ├── 📂 _news/: the news that will appear in the news section in the about page
 ├── 📂 _pages/: contains the pages of the website
 |   └── 📄 404.md: 404 page (page not found)
 ├── 📂 _posts/: contains the blog posts
 ├── 📂 _projects/: contains the projects
-└── 📂 _sass/: contains the SASS files that define the style of the website
-    ├── 📂 font-awesome/: contains the SCSS files for Font Awesome
-    ├── 📄 _blog.scss: blog post, tags, and pagination styles
-    ├── 📄 _components.scss: reusable component styles (cards, profiles, CV, projects)
-    ├── 📄 _cv.scss: style of the CV page
-    ├── 📄 _distill.scss: style of the Distill articles
-    ├── 📄 _footer.scss: footer styles
-    ├── 📄 _layout.scss: overall layout styles
-    ├── 📄 _navbar.scss: navigation bar and dropdown menu styles
-    ├── 📄 _publications.scss: publication list and bibliography styles
-    ├── 📄 _tabs.scss: tabbed content styles
-    ├── 📄 _teachings.scss: course and teaching styles
-    ├── 📄 _themes.scss: theme colors and icons
-    ├── 📄 _typograms.scss: typogram diagram styles
-    ├── 📄 _typography.scss: text, headings, links, tables, and blockquote styles
-    ├── 📄 _utilities.scss: utility styles (code highlighting, forms, modals, animations)
-    └── 📄 _variables.scss: variables used in the SASS files
+└── 📂 test/: starter integration + visual regression checks
 ```
+
+In `v1.x`, the starter is intentionally thin. Theme internals (layouts/includes/style pipeline/runtime assets) are owned by gems such as `al_folio_core` and `al_folio_distill`.
 
 ## Configuration
 
@@ -148,11 +133,13 @@ The configuration file [\_config.yml](_config.yml) contains the main configurati
 
 All changes made to this file are only visible after you rebuild the website. That means that you need to run `bundle exec jekyll serve` again if you are running the website locally or push your changes to GitHub if you are using GitHub Pages. All other changes are visible immediately, you only need to refresh the page.
 
+For `v1.x` starter sites, no local npm style build is required. Core CSS/runtime assets are shipped by the owning gems.
+
 If changes don't appear after refreshing, try:
 
 - **Hard refresh** to reload the page ignoring cached content:
   - [Shift + F5 on Chromium-based browsers](https://support.google.com/chrome/answer/157179#zippy=%2Cwebpage-shortcuts)
-  - [Ctrl + F5 on Firefox-based browsers](https://support.mozilla.org/en-US/kb/keyboard-shortcuts-perform-firefox-tasks-quickly)
+  - Ctrl + F5 on Firefox-based browsers
 - **Clear your browser cache** completely
 - **Use a private/incognito session** to ensure no cached content:
   - [Chrome](https://support.google.com/chrome/answer/95464)
@@ -260,10 +247,11 @@ Understanding al-folio's technology stack will help you better customize and ext
 ### Frontend
 
 - **Markdown**: Content is written in Markdown format for pages, blog posts, and collections. This makes it easy to create and maintain content without worrying about HTML.
-- **Liquid templating**: [Liquid](https://shopify.github.io/liquid/) is used for dynamic template generation. Liquid templates are used in the `_layouts/` and `_includes/` directories to define how your content should be displayed.
+- **Liquid templating**: [Liquid](https://shopify.github.io/liquid/) is used for dynamic template generation. In `v1.x`, canonical templates are gem-owned; local `_layouts/` and `_includes/` are overrides when you need project-specific customization.
 - **HTML & CSS**: The theme uses semantic HTML5 and modern CSS for styling and layout.
-- **SCSS**: Stylesheets are written in [SCSS (Sass)](https://sass-lang.com/), a CSS preprocessor that provides variables, mixins, and functions for more maintainable styling. SCSS files are located in `_sass/` and compiled to CSS during the build process.
-- **Bootstrap**: [Bootstrap 4.6](https://getbootstrap.com/docs/4.6/) is used for responsive grid layout and base styling components.
+- **Tailwind CSS (v1.x core)**: al-folio `v1.x` is Tailwind-first. Core layout/styling is generated from Tailwind with a small set of theme primitives.
+- **SCSS token bridge**: Theme tokens and dark/light palettes remain in `_sass/` and are bridged into Tailwind-based output.
+- **Bootstrap compatibility mode (optional)**: Legacy Bootstrap-marked content can be supported temporarily through `al_folio.compat.bootstrap.enabled`.
 - **JavaScript**: Minimal JavaScript is used for interactive features like the dark mode toggle, search functionality, and dynamic content rendering.
 - **MathJax**: For rendering mathematical equations in LaTeX format on your pages and blog posts.
 - **Mermaid**: For creating diagrams (flowcharts, sequence diagrams, etc.) directly in Markdown.
@@ -313,7 +301,7 @@ Understanding how these technologies work together will help you customize al-fo
 
 1. **Content Creation**: Write content in Markdown
 2. **Template Processing**: Jekyll processes Markdown through Liquid templates
-3. **Styling**: SCSS files are compiled to CSS, with Bootstrap providing the responsive layout framework
+3. **Styling**: Tailwind generates core styles, while SCSS variables/tokens provide stable theme configuration
 4. **Bibliography**: BibTeX files are processed by jekyll-scholar to generate publication pages
 5. **Static Site Generation**: Jekyll builds all files into static HTML
 6. **Deployment**: GitHub Actions automatically deploys the built site to GitHub Pages
@@ -409,7 +397,9 @@ Once deployed, update the URLs above to point to your custom deployment.
 
 ## Creating new pages
 
-You can create new pages by adding new Markdown files in the [\_pages](_pages/) directory. The easiest way to do this is to copy an existing page and modify it. You can choose the layout of the page by changing the [layout](https://jekyllrb.com/docs/layouts/) attribute in the [frontmatter](https://jekyllrb.com/docs/front-matter/) of the Markdown file, and also the path to access it by changing the [permalink](https://jekyllrb.com/docs/permalinks/) attribute. You can also add new layouts in the [\_layouts](_layouts/) directory if you feel the need for it.
+You can create new pages by adding new Markdown files in the [\_pages](_pages/) directory. The easiest way to do this is to copy an existing page and modify it. You can choose the layout of the page by changing the [layout](https://jekyllrb.com/docs/layouts/) attribute in the [frontmatter](https://jekyllrb.com/docs/front-matter/) of the Markdown file, and also the path to access it by changing the [permalink](https://jekyllrb.com/docs/permalinks/) attribute.
+
+In `v1.x`, default layout implementations are gem-owned (primarily `al_folio_core` and feature gems). If you need custom layout behavior, create a local override file in your site (for example, create `_layouts/<name>.liquid` in your starter repo). If you want to improve shared runtime behavior for everyone, open a PR in the owning gem repo.
 
 ## Creating new blog posts
 
@@ -796,11 +786,11 @@ There are several custom bibtex keywords that you can use to affect how the entr
 - `supp`: Adds a "Supp" button to a specified file (if a full link is not specified, the file will be assumed to be placed in the /assets/pdf/ directory)
 - `website`: Adds a "Website" button redirecting to the specified link
 
-You can implement your own buttons by editing the [\_layouts/bib.liquid](_layouts/bib.liquid) file.
+In `v1.x`, bibliography buttons/layout runtime is gem-owned (`al_citations` + `al_folio_core`). For local customization, add a local override `_layouts/bib.liquid` in your site; for upstream/shared behavior changes, open a PR in the owning gem repo.
 
 ## Changing theme color
 
-A variety of beautiful theme colors have been selected for you to choose from. The default is purple, but you can quickly change it by editing the `--global-theme-color` variable in the [\_sass/\_themes.scss](_sass/_themes.scss) file. Other color variables are listed there as well. The stock theme color options available can be found at [\_sass/\_variables.scss](_sass/_variables.scss). You can also add your own colors to this file assigning each a name for ease of use across the template.
+A variety of beautiful theme colors have been selected for you to choose from. In `v1.x`, theme tokens are gem-owned by default. To customize colors locally, either use `_config.yml` theme settings (for light/dark scheme selection) or create local `_sass/_themes.scss` and `_sass/_variables.scss` override files in your starter repo (these override gem defaults).
 
 ## Customizing layout and UI
 
@@ -831,6 +821,8 @@ The template supports icons from:
 - [Font Awesome](https://fontawesome.com/)
 - [Scholar Icons](https://louisfacun.github.io/scholar-icons/)
 
+In `v1.x`, icon runtime ownership is provided by the `al_icons` plugin. Icon files are loaded from pinned CDN URLs via `third_party_libraries` in `_config.yml` (not from starter-local `assets/fonts` or `assets/webfonts` copies).
+
 Social media links will appear at the bottom of the `About` page and in the search results by default. You can customize this behavior in [`_config.yml`](_config.yml):
 
 - `enable_navbar_social: true` – Display social links in the navigation bar
@@ -860,7 +852,57 @@ socials_in_search: true
 - `search_enabled`: Enables the site-wide search feature. When enabled, a search box appears in the navigation bar, allowing users to search across your site content.
 - `socials_in_search`: Includes your social media links and contact information in search results. This makes it easier for visitors to find ways to connect with you.
 
-All these search features work in real-time and do not require a page reload.
+All these search features work in real-time and do not require a page reload. Search runtime assets are owned by the `al_search` plugin.
+
+The navbar search button and the `Ctrl/Cmd + K` shortcut both open the same search modal.
+
+## Sidebar table of contents (Tocbot)
+
+Use front matter on pages/posts:
+
+```yaml
+toc:
+  sidebar: left # or right
+  collapse: expanded # or auto
+# optional explicit depth override:
+# collapse_depth: 3
+```
+
+In `v1.x`, sidebar TOC rendering is powered by Tocbot (configured in `_config.yml` under `third_party_libraries.tocbot`).  
+You can override displayed TOC labels per heading with `data-toc-text`:
+
+```markdown
+## Customizing Your Table of Contents
+
+{:data-toc-text="Customizing"}
+```
+
+`toc.collapse` behavior:
+
+- `expanded` (default): render the full nested TOC expanded.
+- `auto`: collapse nested branches and expand the active branch as you scroll.
+
+If needed, `toc.collapse_depth` can be used for direct Tocbot-style depth control.
+
+## Pretty tables in Tailwind mode
+
+Set `pretty_table: true` in front matter to enable interactive tables.
+
+- If `al_folio.compat.bootstrap.enabled: true`, Bootstrap Table runtime is used.
+- If `al_folio.compat.bootstrap.enabled: false`, the built-in Tailwind-first vanilla table engine is used.
+
+The Tailwind table engine supports `data-toggle="table"` plus search, pagination, sortable columns, and click-to-select.
+
+## Lightbox images
+
+Set in front matter:
+
+```yaml
+images:
+  lightbox2: true
+```
+
+`v1.x` uses the `al_img_tools` plugin lightbox adapter (vanilla JS, no jQuery requirement) while keeping existing `data-lightbox` markup.
 
 ## Social media previews
 
@@ -1075,6 +1117,10 @@ third_party_libraries:
 - `version`: Specifies which version of each library to use. Update this to use a newer version.
 - `url`: Template URLs for loading the library. The `{{version}}` placeholder is replaced with the version number automatically.
 - `integrity`: [Subresource Integrity (SRI)](https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity) hashes ensure that the library hasn't been tampered with. When updating a library version, you should also update its integrity hash.
+- `v1.x` policy: use pinned CDN assets (with SRI where available) for standalone libraries; keep vendored release-time artifacts only in owning plugins when runtime/module graphs are complex (for example `al_search`, `al_folio_distill`).
+- `v1.x` policy: do not add install-time downloads in `gem install` / `bundle install`.
+- `al_math` uses CDN TikZJax assets configured in `third_party_libraries.tikzjax`.
+- `toc.sidebar` uses Tocbot assets configured in `third_party_libraries.tocbot`.
 
 To update a library:
 
@@ -1088,9 +1134,60 @@ To update a library:
      ```
 
      Replace `[FILE_URL]` with the URL of the library file. Then, prefix the result with `sha384-` and use it in the `integrity` field.
-     For detailed instructions on updating specific libraries, see the FAQ:
-     - [How can I update Academicons version](FAQ.md#how-can-i-update-academicons-version-on-the-template)
-     - [How can I update Font Awesome version](FAQ.md#how-can-i-update-font-awesome-version-on-the-template)
+     For icon-specific updates, see the FAQ:
+     - [How can I update icon library versions on the template](FAQ.md#how-can-i-update-icon-library-versions-on-the-template)
+
+## Plugin ecosystem (v1.x)
+
+`al-folio` is a thin starter in `v1.x`. Runtime ownership belongs to plugins/gems.
+
+### Naming convention
+
+- Theme-coupled plugins:
+  - repo: `al-folio-<feature>`
+  - gem/plugin id: `al_folio_<feature>`
+- Reusable plugins:
+  - repo: `al-<feature>` or neutral name
+  - gem/plugin id aligned with plugin namespace
+
+Third-party non-`al-*` plugins are also valid and may be featured in the catalog.
+
+### Featured vs bundled plugins
+
+- **Featured-only**: shown in catalog/docs, not included in starter dependencies by default.
+- **Bundled**: included by default in starter wiring.
+
+Starter wiring uses:
+
+- [Gemfile](Gemfile) for dependencies
+- [\_config.yml](_config.yml) for plugin activation/configuration
+
+The starter currently has no gemspec; plugin integration docs should reference these two files.
+
+## Bootstrap compatibility mode (v1.x)
+
+al-folio `v1.0` and newer are Tailwind-first. If your site still contains Bootstrap-marked content from older versions, use:
+
+```yaml
+al_folio:
+  compat:
+    bootstrap:
+      enabled: true
+```
+
+### Compatibility matrix
+
+- **Supported through `v1.2`**: common Bootstrap-marked layout/content patterns (for example: `row`, `col-*`, `card`, `btn`, and `data-toggle` attributes for collapse/dropdown/tooltip/popover)
+- **Deprecated in `v1.3`**: compatibility mode remains available but migration warnings become stricter
+- **Removed in `v2.0`**: compatibility mode is no longer part of the official runtime
+
+For upgrades, run:
+
+```bash
+bundle exec al-folio upgrade audit
+bundle exec al-folio upgrade apply --safe
+bundle exec al-folio upgrade report
+```
 
 ## Removing content
 
@@ -1119,10 +1216,9 @@ To remove the blog, you have to:
 
 You can also:
 
-- delete [\_includes/latest_posts.liquid](_includes/latest_posts.liquid)
-- delete [\_includes/related_posts.liquid](_includes/related_posts.liquid)
-- delete [\_layouts/archive.liquid](_layouts/archive.liquid) (unless you have a custom collection that uses it)
-- delete [\_plugins/external-posts.rb](_plugins/external-posts.rb)
+- disable `latest_posts.enabled` in [\_pages/about.md](_pages/about.md) and disable related posts via front matter/config where needed
+- in `v1.x` there are no starter-local `_includes/latest_posts.liquid`, `_includes/related_posts.liquid`, or `_layouts/archive.liquid` files to delete (these are gem-owned)
+- remove `al_ext_posts` from the [Gemfile](Gemfile) and from the `plugins` section in [\_config.yml](_config.yml)
 - remove the `jekyll-archives-v2` gem from the [Gemfile](Gemfile) and the `plugins` section in [\_config.yml](_config.yml) (unless you have a custom collection that uses it)
 - remove the `classifier-reborn` gem from the [Gemfile](Gemfile)
 
@@ -1131,7 +1227,7 @@ You can also:
 To remove the news section, you can:
 
 - delete the [\_news](_news/) directory
-- delete the file [\_includes/news.liquid](_includes/news.liquid) and the references to it in the [\_pages/about.md](_pages/about.md)
+- remove/disable the announcements block in [\_pages/about.md](_pages/about.md) (news include runtime is gem-owned in `v1.x`)
 - remove the `announcements` part in [\_pages/about.md](_pages/about.md)
 - remove the news part in the `Collections` section in the [\_config.yml](_config.yml) file
 
@@ -1146,8 +1242,7 @@ To remove the projects, you can:
 
 You can also:
 
-- delete [\_includes/projects_horizontal.liquid](_includes/projects_horizontal.liquid)
-- delete [\_includes/projects.liquid](_includes/projects.liquid)
+- in `v1.x`, projects include templates are gem-owned and not present as starter-local files to delete
 
 ### Removing the publications page
 
@@ -1160,13 +1255,9 @@ To remove the publications, you can:
 
 You can also:
 
-- delete the [\_layouts/bib.liquid](_layouts/bib.liquid) file
-- delete [\_includes/bib_search.liquid](_includes/bib_search.liquid)
-- delete [\_includes/citation.liquid](_includes/citation.liquid)
-- delete [\_includes/selected_papers.liquid](_includes/selected_papers.liquid)
-- delete [\_plugins/google-scholar-citations.rb](_plugins/google-scholar-citations.rb)
-- delete [\_plugins/hide-custom-bibtex.rb](_plugins/hide-custom-bibtex.rb)
-- delete [\_plugins/inspirehep-citations.rb](_plugins/inspirehep-citations.rb)
+- in `v1.x`, bibliography layout/includes are gem-owned, so there are no starter-local `_layouts/bib.liquid`, `_includes/bib_search.liquid`, `_includes/citation.liquid`, or `_includes/selected_papers.liquid` files to delete
+- the old `hide-custom-bibtex.rb` helper is now provided by `al_folio_core` (there is no local file to delete)
+- remove `al_citations` from the [Gemfile](Gemfile) and from the `plugins` section in [\_config.yml](_config.yml)
 - remove the `jekyll-scholar` gem from the [Gemfile](Gemfile) and the `plugins` section in [\_config.yml](_config.yml)
 
 ### Removing the repositories page
@@ -1174,7 +1265,7 @@ You can also:
 To remove the repositories, you can:
 
 - delete the repositories page [\_pages/repositories.md](_pages/repositories.md)
-- delete [\_includes/repository/](_includes/repository/) directory
+- in `v1.x`, repository rendering includes are gem-owned and not present as starter-local files to delete
 
 ### You can also remove pages through commenting out front-matter blocks
 
@@ -1213,16 +1304,14 @@ Due to the necessary permissions (PAT and others mentioned above), it is recomme
 
 ## Customizing fonts, spacing, and more
 
-The `_sass/` directory contains specialized SCSS files organized by feature and usage. To customize fonts, spacing, colors, and other styles, edit the relevant file based on what you're modifying:
+In `v1.x`, base SCSS is gem-owned. For project-specific style customization, create local override files under `_sass/` in your starter repo and define only the variables/rules you want to change.
 
-- **Typography:** Edit `_typography.scss` to change fonts, heading styles, links, tables, and blockquotes.
-- **Navigation:** Edit `_navbar.scss` to customize the navigation bar and dropdown menus.
-- **Colors and themes:** Edit `_themes.scss` to change theme colors and `_variables.scss` for global variables.
-- **Blog styles:** Edit `_blog.scss` to customize blog post listings, tags, and pagination.
-- **Publications:** Edit `_publications.scss` to modify bibliography and publication display styles.
-- **Components:** Edit `_components.scss` to customize reusable components like cards, profiles, and projects.
-- **Code and utilities:** Edit `_utilities.scss` for code highlighting, forms, modals, and animations.
-- **Layout:** Edit `_layout.scss` for overall page layout styles.
+Common override patterns:
+
+- **Typography:** add overrides for headings, inline code, tables, and blockquotes.
+- **Navigation:** override navbar/dropdown spacing, alignment, and interaction styles.
+- **Colors and themes:** override token variables such as `--global-theme-color` and related palette variables.
+- **Components:** override cards, projects, publications, and utility classes used by your content.
 
 The easiest way to preview changes in advance is by using [Chrome dev tools](https://developer.chrome.com/docs/devtools/css) or [Firefox dev tools](https://firefox-source-docs.mozilla.org/devtools-user/). Inspect elements to see which styles apply and experiment with changes before editing the SCSS files. For more information on how to use these tools, check [Chrome](https://developer.chrome.com/docs/devtools/css) and [Firefox](https://firefox-source-docs.mozilla.org/devtools-user/page_inspector/how_to/examine_and_edit_css/index.html) how-tos, and [this tutorial](https://www.youtube.com/watch?v=l0sgiwJyEu4).
 
@@ -1256,7 +1345,7 @@ In this folder you need to store your file in the same format as you would in `_
 
 ## GDPR Cookie Consent Dialog
 
-**al-folio** includes a built-in GDPR-compliant cookie consent dialog to help you respect visitor privacy and comply with privacy regulations (GDPR, CCPA, etc.). The feature is powered by [Vanilla Cookie Consent](https://cookieconsent.orestbida.com/) and integrates with all analytics providers.
+**al-folio** supports a GDPR-compliant cookie consent dialog via the `al_cookie` plugin to help you respect visitor privacy and comply with privacy regulations (GDPR, CCPA, etc.). The feature is powered by [Vanilla Cookie Consent](https://cookieconsent.orestbida.com/) and integrates with all analytics providers.
 
 ### How it works
 
@@ -1287,7 +1376,14 @@ In this folder you need to store your file in the same format as you would in `_
    enable_cookie_consent: true
    ```
 
-3. Rebuild your site:
+3. Ensure `al_cookie` is enabled in your plugin list:
+
+   ```yaml
+   plugins:
+     - al_cookie
+   ```
+
+4. Rebuild your site:
 
    ```bash
    docker compose down && docker compose up
@@ -1295,18 +1391,18 @@ In this folder you need to store your file in the same format as you would in `_
    bundle exec jekyll serve
    ```
 
-4. The consent dialog will automatically appear on your site's homepage on first visit
+5. The consent dialog will automatically appear on your site's homepage on first visit
 
 ### Customizing the consent dialog
 
-The consent dialog configuration and messages are defined in [`_scripts/cookie-consent-setup.js`](_scripts/cookie-consent-setup.js). You can customize:
+The consent dialog configuration and messages are now owned by `al_cookie` (`lib/templates/cookie_consent_setup.js.liquid` in that gem). To customize behavior, override cookie consent scripts in your site templates or fork/pin `al_cookie` and adjust the template there.
 
 - Dialog titles and button labels
 - Cookie categories and descriptions
 - Contact information links (points to `#contact` by default)
 - Language translations
 
-To modify the dialog, edit the `language.translations.en` section in `_scripts/cookie-consent-setup.js`. For example, to change the consent dialog title:
+To modify the dialog, edit the `language.translations.en` section in the plugin template. For example, to change the consent dialog title:
 
 ```javascript
 consentModal: {

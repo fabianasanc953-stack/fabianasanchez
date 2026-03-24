@@ -315,6 +315,21 @@ For installation and deployment details please refer to [INSTALL.md](INSTALL.md)
 
 For customization details please refer to [CUSTOMIZE.md](CUSTOMIZE.md).
 
+## Plugin Ecosystem
+
+`al-folio` is a thin starter in `v1.x`. Runtime features are plugin-owned.
+
+- Ownership boundaries: [BOUNDARIES.md](BOUNDARIES.md)
+- Plugin catalog metadata: [`_data/featured_plugins.yml`](_data/featured_plugins.yml)
+- Plugin catalog page source: [`_pages/plugins.md`](_pages/plugins.md)
+
+Naming convention:
+
+- Theme-coupled plugins use `al-folio-<feature>` repos and `al_folio_<feature>` gem/plugin ids.
+- Reusable plugins can use `al-<feature>` or neutral naming.
+
+Featured plugins and bundled starter plugins are different tracks. Bundling requires explicit updates to [Gemfile](Gemfile) and [\_config.yml](_config.yml).
+
 ## GitHub Copilot Agents
 
 This repository includes two specialized GitHub Copilot agents to enhance your development experience:
@@ -354,6 +369,7 @@ Comprehensive guides for all aspects of your al-folio website:
 - **[FAQ](FAQ.md)** – Frequently asked questions and solutions
 - **[Analytics](ANALYTICS.md)** – Add website analytics and visitor tracking
 - **[SEO Guide](SEO.md)** – Optimize for search engines and improve discoverability
+- **[Plugin Catalog](_pages/plugins.md)** – Featured and bundled plugin metadata
 
 ## Features
 
@@ -429,7 +445,7 @@ For more details on how to create distill-styled posts using `<d-*>` tags, pleas
 
 #### Photos, Audio, Video and more
 
-Photo formatting is made simple using [Bootstrap's grid system](https://getbootstrap.com/docs/4.4/layout/grid/). Easily create beautiful grids within your blog posts and project pages, also with support for [video](https://alshedivat.github.io/al-folio/blog/2023/videos/) and [audio](https://alshedivat.github.io/al-folio/blog/2023/audios/) embeds:
+Photo formatting is made simple using Tailwind-first responsive layout utilities. Easily create beautiful grids within your blog posts and project pages, also with support for [video](https://alshedivat.github.io/al-folio/blog/2023/videos/) and [audio](https://alshedivat.github.io/al-folio/blog/2023/audios/) embeds:
 
 <p align="center">
   <a href="https://alshedivat.github.io/al-folio/projects/1_project/">
@@ -495,7 +511,7 @@ We decided to keep `Axe` runs manual because fixing the issues are not straightf
 
 #### GDPR Cookie Consent Dialog
 
-**al-folio** includes a built-in, GDPR-compliant cookie consent dialog to ensure your website respects visitor privacy. The dialog is powered by [Vanilla Cookie Consent](https://cookieconsent.orestbida.com/) and integrates seamlessly with all supported analytics providers.
+**al-folio** includes a GDPR-compliant cookie consent dialog provided by the `al_cookie` plugin to ensure your website respects visitor privacy. The dialog is powered by [Vanilla Cookie Consent](https://cookieconsent.orestbida.com/) and integrates seamlessly with all supported analytics providers.
 
 When enabled, analytics scripts are blocked until the user explicitly consents, and user preferences are saved across visits. This is essential for websites serving visitors in the European Union and other regions with strict privacy regulations.
 
